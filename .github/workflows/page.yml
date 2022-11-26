@@ -36,8 +36,6 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - run: ls
-      - run: ls public
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -58,13 +56,19 @@ jobs:
         with:
           name: hexo-artifact
           path: hexo-demo/public
-      - run: ls
-      - run: ls public
-      - run: pwd
-      - run: echo ${GITHUB_WORKSPACE}
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.HEXO_DEPLOY_TOKEN }}
           external_repository: thelittlesheep/thelittlesheep.github.io
           publish_dir: hexo-demo/public
+      - name: GCP authentication
+        uses: google-github-actions/auth@v0.8.1
+        with:
+          workload_identity_provider: '${{secrets.WORKLOAD_IDENTITY_PROVIDER}}'
+          service_account: '${{secrets.SERVICE_ACCOUNT}}'
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.6.0
+      - name: Upload file to Cloud Storage
+        run: |
+          gsutil -m cp -r -c -z html,js,css hexo-demo/public ${{secrets.STORAGE_PATH}}
