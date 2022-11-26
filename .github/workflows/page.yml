@@ -74,4 +74,4 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.6.0
       - name: Upload file to Cloud Storage
         run: |
-          gsutil -m cp -r -c -z html,js,css hexo-demo/public ${{secrets.STORAGE_PATH}}
+          gsutil -m cp -r -c -z html,js,css hexo-demo/public/** ${{secrets.STORAGE_PATH}}
